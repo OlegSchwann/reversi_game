@@ -145,7 +145,7 @@ class PlayingField:
                     # вниз ↓
                     rivals_chips = []
                     step_x = x + 1
-                    while step_y < Y_LEN and step_x < X_LEN:
+                    while step_x < X_LEN:
                         if self.field[step_x][y] == self.stroke:  # если своя фишка загораживает
                             break
                         if 1 != self.field[step_x][y] != 2:  # если не стоит никакая фишка
