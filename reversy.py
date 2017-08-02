@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
 import playing_field
+import search_move
+import time
 
 pygame.init()
 field_side = 1000
@@ -18,11 +20,18 @@ while mainLoop:
     for event in pygame.event.get():
         if event.type == QUIT:
             mainLoop = False
-        if event.type == MOUSEBUTTONDOWN:
-            # передаём полю абсолютные координаты нажатия
-            playing_field.process_click(*event.pos)
-            # создаём картинку только после изменения поля, что б не грузить процессор на 100%
-            # playing_field.оutput_to_console()
-            playing_field.draw_field(screen)
-    pygame.display.update()
+        # 2 режима: ход пользователя и ход компьютера.
+        # игрок ходит чёрными, 2
+        if playing_field.stroke == 1:
+            x, y = search_move.next_move(playing_field.field, 1)
+            playing_field.move(x, y)
+            time.sleep(0.5)
+        if playing_field.stroke == 2:
+            if event.type == MOUSEBUTTONDOWN:
+                # передаём полю абсолютные координаты нажатия
+                playing_field.process_click(*event.pos)
+                # создаём картинку только после изменения поля, что б не грузить процессор на 100%
+        playing_field.draw_field(screen)
+        pygame.display.update()
+    time.sleep(0.1)
 pygame.quit()
