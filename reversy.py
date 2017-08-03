@@ -24,8 +24,9 @@ while mainLoop:
         # игрок ходит чёрными, 2
         if playing_field.stroke == 1:
             x, y = search_move.next_move(playing_field.field, 1)
+            print(playing_field.stroke)
             playing_field.move(x, y)
-            time.sleep(0.5)
+            print("фишка поставлена", x, y)
         if playing_field.stroke == 2:
             if event.type == MOUSEBUTTONDOWN:
                 # передаём полю абсолютные координаты нажатия

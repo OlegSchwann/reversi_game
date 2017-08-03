@@ -180,6 +180,7 @@ class PlayingField:
         # меняет игрока
         # № строки задаётся с 0 сверху
         # № столбца слева на право
+        self.output_to_console()
         if type(self.field[row][column]) is list:  # ход возможен
             self.flip_chips(self.field[row][column])  # переворачиваем фишки
             self.field[row][column] = self.stroke
