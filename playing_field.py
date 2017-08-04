@@ -10,8 +10,8 @@ class PlayingField:
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 2, 1, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 2, 0, 0, 0, 0],
+            [0, 0, 0, 0, 2, 1, 0, 0, 0, 0],  # 2, 1
+            [0, 0, 0, 0, 1, 2, 0, 0, 0, 0],  # 1, 2
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -180,7 +180,13 @@ class PlayingField:
         # меняет игрока
         # № строки задаётся с 0 сверху
         # № столбца слева на право
+        # если получает (-1, -1) - это можно только от бота получить - то пропускает ход - меняет игрока
         self.output_to_console()
+        if row == column == -1:
+            self.stroke = 1 if self.stroke == 2 else 2  # инвертирует игрока
+            # переразмечает поле возможными ходами для следующего игрока
+            self.find_moves()
+            return None # выходим, чтоб случайно не сходить в нижнюю правую клетку
         if type(self.field[row][column]) is list:  # ход возможен
             self.flip_chips(self.field[row][column])  # переворачиваем фишки
             self.field[row][column] = self.stroke
@@ -237,3 +243,11 @@ class PlayingField:
         # использует список кортежей(x, y) который хранится в ячейках, возможных для хода.
         for (x, y) in list_of_reversible:
             self.field[x][y] = self.stroke
+
+    def there_are_moves(self):
+        """проверяет, есть ли у ходящего игрока ходы"""
+        for line in self.field:
+            for cell in line:
+                if type(cell) is list:
+                    return True
+        return False

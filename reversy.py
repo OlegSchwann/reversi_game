@@ -26,6 +26,8 @@ while mainLoop:
             x, y = search_move.next_move(playing_field.field, 1)
             print(playing_field.stroke)
             playing_field.move(x, y)
+            if not playing_field.there_are_moves():  # если у нашего игрока нет ходов
+                playing_field.move(-1, -1)  # пропускаем его ход
             print("фишка поставлена", x, y)
         if playing_field.stroke == 2:
             if event.type == MOUSEBUTTONDOWN:

@@ -118,7 +118,7 @@ def find_moves(input_field, player):  # фиговое решение. в пер
                     rivals_chips.append((step_x, step_y))
                     step_y -= 1
                     step_x += 1
-    return dictionary_of_moves
+    return dictionary_of_moves or {None: []}  # если ходов нет - вернёт фиктивный ход
 
 
 def next_move(field, player):
@@ -144,13 +144,17 @@ def gain(field, player):
 
 
 def make_field(field, change_cell, change_list, player):
-    """функция принимает поле, одну строчку словаря ходов и возвращает новое изменённое поле"""
-    new_field = copy.deepcopy(field)
-    x, y = change_cell
-    new_field[x][y] = player
-    for x, y in change_list:
+    """функция принимает поле, одну строчку словаря ходов и возвращает новое изменённое поле
+    если change_cell = None, то просто в озвращаем это же поле без копирования"""
+    if change_cell:
+        new_field = copy.deepcopy(field)
+        x, y = change_cell
         new_field[x][y] = player
-    return new_field
+        for x, y in change_list:
+            new_field[x][y] = player
+        return new_field
+    else:
+        return field
 
 
 def minimax(field, player, depth=3):
@@ -176,7 +180,7 @@ def minimax(field, player, depth=3):
             min_cost = 100  # стоимость к которой соперник постарается привести нас
             # для каждого ответного хода вновь моделируем поле
             for cell2 in dictionary_of_moves2:
-                print("рассматриваем ход", cell, "соперника")
+                print("рассматриваем ход", cell2, "соперника")
                 field_after_2move = make_field(field_after_move, cell2, dictionary_of_moves2[cell2], (1 if player == 2 else 2))
                 # теперь надо узнать ценность полученного поля
                 cost, _ = minimax(field_after_2move, player, depth - 1) # оп, рекурсия
@@ -186,14 +190,12 @@ def minimax(field, player, depth=3):
             if min_cost > max_gain:
                 max_gain = min_cost
                 # надо также сохранить ход, который привёл к максимальному выигрышу, не смотря на сопротивление соперника
-                good_x, good_y = cell
+                if cell:  # если нормальный ход
+                    good_x, good_y = cell
+                else:  # если приходится пропускать ход
+                    good_x, good_y = -1, -1
+
         # вышли из цикла, возвращаем стоимость и кортеж - лучший наш ход
     # ! всё ещё нет обработки пропуска хода.
     print("выход из рекурсивного минимакса, глубина", depth)
     return max_gain, (good_x, good_y)
-
-'''def test_out(field):
-    for x, y in dictionary_of_moves:
-        default_field[x][y] = 3
-    for i in default_field:
-        print(i)'''
