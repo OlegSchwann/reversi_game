@@ -25,35 +25,25 @@ data = tsp_socket.recv(1024).decode('utf-8') # получаем от серве�
 #    'color': 1
 # }
 init_information = json.loads(data)
+print(init_information)
 our_move = init_information['color']
 current_stroke = 1 # первый пишет первым
 
 #клиент находится в одном из двух состояний:
 while True:
-    if current_stroke == оur_move:
+    if current_stroke == our_move:
         #либо ждёт ввода от пользователя
         text = input('Введите любой текст:')
+        print('input:', text)
         message = json.dumps({'text': text})
         #и посылает его серверу
         tsp_socket.send(message.encode('utf-8'))
-        current_stroke = 1 if current_stroke==2 else 1  # меняем ход
+        current_stroke = (1 if current_stroke == 2 else 2)  # меняем ход
     else:
+        print('жду ответа')
         #либо ждёт ответа от сервера
-        conn.settimeout(60)  # установка таймаута
         data = tsp_socket.recv(16384)  # получение данных
-        if data:  # данные пришли
-            message = json.loads(data.decode('utf-8'))
-            print('Собеседник прислал:\n\t'+message['text'])
-            current_stroke = 1 if current_stroke==2 else 1  # меняем ход
-        else:  # не отвечает минуту
-            print('Содинение разорвано.')
-            tsp_socket.close()
-            break
-
-
-
-
-
-
-
-
+        message = json.loads(data.decode('utf-8'))
+        print('Собеседник прислал:\n\t'+message['text'])
+        current_stroke = (1 if current_stroke == 2 else 2)  # меняем ход
+    print('current_stroke =', current_stroke)
